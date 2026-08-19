@@ -1,0 +1,28 @@
+NeoCare Dataset Summary
+=======================
+
+Total Classes      : 6
+Total Audio Files  : 1901
+Average Duration   : 5.08 sec
+Minimum Duration   : 1.08 sec
+Maximum Duration   : 7.18 sec
+
+Files per Class
+Class
+Belly or Physical pain    903
+Hungry                    427
+Burping                   417
+Discomfort                122
+Tired                      19
+Temperature Discomfort     13
+Name: count, dtype: int64
+
+Sample Rate Distribution
+Sample Rate
+16000    1901
+Name: count, dtype: int64
+
+Channel Distribution
+Channels
+1    1901
+Name: count, dtype: int64
