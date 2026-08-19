@@ -1,13 +1,18 @@
+
 import os
-import hashlib
 import shutil
+import librosa
+import numpy as np
 
 INPUT_PATH = r"D:\Project\Major\Cry Datasets\NeoCare_Dataset_V2"
 OUTPUT_PATH = r"D:\Project\Major\Cry Datasets\NeoCare_Dataset_V3"
 
-seen_hashes = set()
+os.makedirs(OUTPUT_PATH, exist_ok=True)
+
+fingerprints = set()
+
+unique = 0
 duplicates = 0
-copied = 0
 
 for class_name in os.listdir(INPUT_PATH):
 
@@ -21,21 +26,35 @@ for class_name in os.listdir(INPUT_PATH):
 
     for file in os.listdir(input_class):
 
-        if not file.lower().endswith(".wav"):
+        if not file.endswith(".wav"):
             continue
 
-        input_file = os.path.join(input_class, file)
+        path = os.path.join(input_class, file)
 
-        with open(input_file, "rb") as f:
-            file_hash = hashlib.md5(f.read()).hexdigest()
+        try:
+            y, sr = librosa.load(path, sr=16000)
 
-        if file_hash not in seen_hashes:
-            seen_hashes.add(file_hash)
-            shutil.copy2(input_file, os.path.join(output_class, file))
-            copied += 1
-        else:
-            duplicates += 1
+            # Create a simple fingerprint from MFCCs
+            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=20)
+            fingerprint = tuple(np.round(np.mean(mfcc, axis=1), 2))
+
+            if fingerprint not in fingerprints:
+
+                fingerprints.add(fingerprint)
+
+                shutil.copy2(
+                    path,
+                    os.path.join(output_class, file)
+                )
+
+                unique += 1
+
+            else:
+                duplicates += 1
+
+        except Exception:
+            continue
 
 print("\n========== Duplicate Removal ==========")
-print(f"Unique files      : {copied}")
+print(f"Unique files      : {unique}")
 print(f"Duplicates removed: {duplicates}")
