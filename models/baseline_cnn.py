@@ -4,16 +4,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout
+
+from tensorflow.keras.layers import (
+    Input,
+    Conv2D,
+    MaxPooling2D,
+    Flatten,
+    Dense,
+    Dropout
+)
+
 from tensorflow.keras.callbacks import (
     ModelCheckpoint,
     EarlyStopping,
     ReduceLROnPlateau
 )
+
 from tensorflow.keras.utils import to_categorical
 
 # ==========================
@@ -55,11 +61,12 @@ print("Training Shape :", X_train.shape)
 
 model = Sequential([
 
+    Input(shape=X_train.shape[1:]),
+
     Conv2D(
         32,
         (3,3),
-        activation="relu",
-        input_shape=X_train.shape[1:]
+        activation="relu"
     ),
 
     MaxPooling2D((2,2)),
@@ -89,6 +96,7 @@ model.compile(
 
     metrics=["accuracy"]
 )
+model.summary()
 
 os.makedirs("saved_models", exist_ok=True)
 
